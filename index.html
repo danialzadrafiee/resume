@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danial Zadrafiei — Full Stack Developer & Software Architect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                        mono: ['Space Mono', 'monospace'],
+                    },
+                    colors: { acid: '#b4ff00', dark: '#0a0a0f' }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ── BASE ─────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            cursor: none;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0a0a0f;
+            color: #c8c8d8;
+            overflow-x: hidden;
+        }
+
+        /* Grid overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px);
+            background-size: 64px 64px;
+        }
+
+        /* Noise overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: .026;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* Stacking context above overlays */
+        nav,
+        section,
+        header,
+        footer,
+        #pbar,
+        #cdot,
+        #cring,
+        .above {
+            position: relative;
+            z-index: 2;
+        }
+
+        #pbar,
+        #cdot,
+        #cring {
+            z-index: 9999;
+        }
+
+        /* ── CURSOR ───────────────────────────────────── */
+        #cdot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #b4ff00;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: transform .08s;
+        }
+
+        #cring {
+            position: fixed;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(180, 255, 0, .45);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width .35s cubic-bezier(.23, 1, .32, 1),
+                height .35s cubic-bezier(.23, 1, .32, 1),
+                border-color .3s;
+        }
+
+        body.hov #cring {
+            width: 58px;
+            height: 58px;
+            border-color: rgba(180, 255, 0, .85);
+        }
+
+        /* ── PROGRESS BAR ─────────────────────────────── */
+        #pbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #b4ff00, #00e5ff);
+            width: 0%;
+            transition: width .1s linear;
+        }
+
+        /* ── KEYFRAMES ────────────────────────────────── */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(42px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .35;
+                transform: scale(1.7);
+            }
+        }
+
+        @keyframes glitch1 {
+
+            0%,
+            89%,
+            100% {
+                clip-path: inset(0 0 100% 0);
+                transform: skewX(0);
+            }
+
+            90% {
+                clip-path: inset(18% 0 44% 0);
+                transform: skewX(-5deg);
+            }
+
+            92% {
+                clip-path: inset(62% 0 18% 0);
+                transform: skewX(4deg);
+            }
+
+            94% {
+                clip-path: inset(38% 0 52% 0);
+                transform: skewX(-3deg);
+            }
+
+            97% {
+                clip-path: inset(78% 0 8% 0);
+                transform: skewX(5deg);
+            }
+        }
+
+        @keyframes glitch2 {
+
+            0%,
+            89%,
+            100% {
+                clip-path: inset(0 0 100% 0);
+                transform: skewX(0);
+            }
+
+            90% {
+                clip-path: inset(50% 0 28% 0);
+                transform: skewX(4deg);
+            }
+
+            93% {
+                clip-path: inset(12% 0 70% 0);
+                transform: skewX(-4deg);
+            }
+
+            96% {
+                clip-path: inset(82% 0 4% 0);
+                transform: skewX(3deg);
+            }
+        }
+
+        @keyframes borderGlow {
+
+            0%,
+            100% {
+                border-color: rgba(255, 255, 255, .07);
+            }
+
+            50% {
+                border-color: rgba(180, 255, 0, .2);
+            }
+        }
+
+        /* ── TYPOGRAPHY ───────────────────────────────── */
+        .display {
+            font-size: clamp(4.5rem, 12vw, 14rem);
+            font-weight: 700;
+            line-height: .88;
+            letter-spacing: -.05em;
+            text-transform: uppercase;
+        }
+
+        .glitch {
+            position: relative;
+            display: block;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        .glitch::before {
+            color: #ff3366;
+            mix-blend-mode: screen;
+            animation: glitch1 7s infinite;
+        }
+
+        .glitch::after {
+            color: #00e5ff;
+            mix-blend-mode: screen;
+            animation: glitch2 7s infinite .12s;
+        }
+
+        /* ── SCROLL REVEAL ────────────────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity .85s cubic-bezier(.16, 1, .3, 1),
+                transform .85s cubic-bezier(.16, 1, .3, 1);
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── COMPONENTS ───────────────────────────────── */
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, .09);
+            font-family: 'Space Mono', monospace;
+            font-size: .68rem;
+            background: rgba(255, 255, 255, .025);
+            white-space: nowrap;
+            transition: border-color .2s, color .2s, background .2s;
+            cursor: default;
+        }
+
+        .pill:hover {
+            border-color: #b4ff00;
+            color: #b4ff00;
+            background: rgba(180, 255, 0, .06);
+        }
+
+        .card {
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, .018);
+            transition: transform .38s cubic-bezier(.16, 1, .3, 1),
+                border-color .25s, box-shadow .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(180, 255, 0, .28);
+            box-shadow: 0 12px 48px rgba(180, 255, 0, .06);
+        }
+
+        .nav-lnk {
+            position: relative;
+            font-family: 'Space Mono', monospace;
+            font-size: .7rem;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: #555;
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .nav-lnk::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #b4ff00;
+            transition: width .3s;
+        }
+
+        .nav-lnk:hover {
+            color: #b4ff00;
+        }
+
+        .nav-lnk:hover::after {
+            width: 100%;
+        }
+
+        .sec-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: .62rem;
+            color: #b4ff00;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            opacity: .85;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            border-radius: 2px 0 0 2px;
+        }
+
+        /* ── MARQUEE ──────────────────────────────────── */
+        .mq-wrap {
+            overflow: hidden;
+        }
+
+        .mq-track {
+            display: flex;
+            width: max-content;
+            animation: marquee 35s linear infinite;
+        }
+
+        .mq-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* ── SCROLLBAR ────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 3px;
+            background: #0a0a0f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #b4ff00;
+            border-radius: 2px;
+        }
+
+        /* ── RESPONSIVE ───────────────────────────────── */
+        @media(max-width:768px) {
+            .display {
+                font-size: clamp(3.2rem, 19vw, 7rem) !important;
+            }
+
+            .hide-mob {
+                display: none !important;
+            }
+
+            .mob-col {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
+
+            .mob-col-2 {
+                grid-template-columns: 1fr !important;
+            }
+
+            .mob-border-b {
+                border-right: none !important;
+                border-bottom: 1px solid rgba(255, 255, 255, .07) !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── PROGRESS ──────────────────────────────── -->
+    <div id="pbar"></div>
+
+    <!-- ── CURSOR ────────────────────────────────── -->
+    <div id="cdot"></div>
+    <div id="cring"></div>
+
+    <!-- Ambient blobs -->
+    <div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
+        <div
+            style="position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(120px);background:rgba(180,255,0,.04);top:-200px;right:-150px;">
+        </div>
+        <div
+            style="position:absolute;width:500px;height:500px;border-radius:50%;filter:blur(100px);background:rgba(0,100,255,.04);bottom:10%;left:-180px;">
+        </div>
+        <div
+            style="position:absolute;width:350px;height:350px;border-radius:50%;filter:blur(90px);background:rgba(180,255,0,.025);bottom:30%;right:20%;">
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ NAV ═══════════════ -->
+    <nav style="position:fixed;top:0;left:0;right:0;z-index:500;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(14px);background:rgba(10,10,15,.75);">
+        <div style="max-width:1440px;margin:0 auto;padding:0 2rem;
+    height:58px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-family:'Space Mono',monospace;font-size:.78rem;
+      font-weight:700;letter-spacing:.05em;color:#fff;">
+                DZ<span style="color:#b4ff00;">_</span>
+            </span>
+            <div style="display:flex;align-items:center;gap:2.5rem;">
+                <a href="#experience" class="nav-lnk hide-mob">Experience</a>
+                <a href="#skills" class="nav-lnk hide-mob">Stack</a>
+                <a href="#work" class="nav-lnk hide-mob">Work</a>
+                <a href="#contact" class="nav-lnk" style="
+        color:#b4ff00;border:1px solid rgba(180,255,0,.38);
+        padding:7px 16px;border-radius:5px;
+        transition:background .2s,border-color .2s;" onmouseover="this.style.background='rgba(180,255,0,.1)'"
+                    onmouseout="this.style.background='transparent'">
+                    Available ↗
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════ HERO ══════════════ -->
+    <header style="min-height:100vh;display:flex;flex-direction:column;
+  justify-content:space-between;padding:8rem 2rem 3rem;
+  max-width:1440px;margin:0 auto;">
+
+        <!-- top meta -->
+        <div style="display:flex;justify-content:space-between;
+    align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+            <div style="display:flex;align-items:center;gap:9px;">
+                <span style="width:7px;height:7px;border-radius:50%;
+        background:#b4ff00;display:block;
+        animation:pulse 2s ease-in-out infinite;"></span>
+                <span style="font-family:'Space Mono',monospace;font-size:.62rem;
+        color:#b4ff00;letter-spacing:.12em;text-transform:uppercase;">
+                    Open to Work
+                </span>
+            </div>
+
+        </div>
+
+        <!-- display name -->
+        <div style="margin-top:2rem;">
+            <div class="sec-tag">001 / Introduction</div>
+
+            <h1 class="display glitch" data-text="DANIAL" style="color:#fff;">DANIAL</h1>
+
+
+
+            <h1 class="display" style="color:#b4ff00;position:relative;display:block;">
+                ZADRA FIEE
+                <!-- underline glow -->
+                <span style="position:absolute;bottom:.12em;left:0;width:55%;
+        height:3px;background:linear-gradient(90deg,#b4ff00 0%,transparent 100%);
+        opacity:.5;display:block;border-radius:2px;"></span>
+            </h1>
+        </div>
+
+        <!-- bottom strip -->
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;
+    border-top:1px solid rgba(255,255,255,.06);padding-top:2rem;
+    align-items:end;" class="mob-col">
+            <p style="font-size:.85rem;line-height:1.8;color:#666;max-width:300px;">
+                Full Stack Developer &amp; Software Architect.<br>
+                8 years. Every layer. No narrow problems.
+            </p>
+
+            <div style="display:flex;gap:2.5rem;justify-content:center;">
+                <div style="text-align:center;">
+                    <div style="font-family:'Space Mono',monospace;font-size:2.4rem;
+          font-weight:700;color:#fff;line-height:1;">
+                        <span class="cnt" data-to="8">0</span>+
+                    </div>
+                    <div style="font-family:'Space Mono',monospace;font-size:.55rem;
+          color:#444;letter-spacing:.12em;text-transform:uppercase;margin-top:5px;">Years</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-family:'Space Mono',monospace;font-size:2.4rem;
+          font-weight:700;color:#fff;line-height:1;">
+                        <span class="cnt" data-to="120">0</span>+
+                    </div>
+                    <div style="font-family:'Space Mono',monospace;font-size:.55rem;
+          color:#444;letter-spacing:.12em;text-transform:uppercase;margin-top:5px;">Projects</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-family:'Space Mono',monospace;font-size:2.4rem;
+          font-weight:700;color:#fff;line-height:1;">
+                        <span class="cnt" data-to="15">0</span>+
+
+                    </div>
+                    <div style="font-family:'Space Mono',monospace;font-size:.55rem;
+          color:#444;letter-spacing:.12em;text-transform:uppercase;margin-top:5px;">Stacks</div>
+                </div>
+            </div>
+
+            <div style="text-align:right;" class="hide-mob">
+                <a href="#experience" style="
+        display:inline-flex;flex-direction:column;align-items:center;gap:9px;
+        color:#444;text-decoration:none;
+        transition:color .3s;" onmouseover="this.style.color='#b4ff00'" onmouseout="this.style.color='#444'">
+                    <span style="font-family:'Space Mono',monospace;font-size:.55rem;
+          letter-spacing:.12em;text-transform:uppercase;">SCROLL</span>
+                    <svg width="20" height="30" viewBox="0 0 20 30" fill="none"
+                        style="animation:fadeUp 1.5s ease-in-out infinite alternate;">
+                        <line x1="10" y1="0" x2="10" y2="28" stroke="currentColor" stroke-width="1.5" />
+                        <polyline points="3,20 10,28 17,20" stroke="currentColor" stroke-width="1.5" fill="none" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════ TICKER ════════════ -->
+    <div style="background:rgba(180,255,0,.055);
+  border-top:1px solid rgba(180,255,0,.14);
+  border-bottom:1px solid rgba(180,255,0,.14);
+  padding:10px 0;overflow:hidden;">
+        <div class="mq-track" id="mqTrack">
+            <!-- filled by JS -->
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ ABOUT ════════════ -->
+    <section id="about" style="max-width:1440px;margin:0 auto;padding:9rem 2rem;">
+        <div style="display:grid;grid-template-columns:1fr 1.8fr;gap:7rem;
+    align-items:start;" class="mob-col">
+
+            <div class="reveal">
+                <span class="sec-tag">002 / About</span>
+                <h2 style="font-size:clamp(2rem,3.5vw,3rem);font-weight:700;
+        color:#fff;line-height:1.1;letter-spacing:-.03em;">
+                    Not a<br>specialist.
+                </h2>
+                <p style="font-size:.82rem;color:#444;margin-top:1.5rem;line-height:1.9;">
+                    Specialists are useful when the problem is narrow.<br>
+                    Most problems aren't narrow.
+                </p>
+            </div>
+
+            <div class="reveal" style="transition-delay:.12s;">
+                <p style="font-size:1.05rem;line-height:1.95;color:#9090b8;margin-bottom:2.5rem;">
+                    8 years building software across the full stack. Started with web, moved into mobile,
+                    financial systems, real-time infrastructure, and blockchain. The work has ranged from
+                    consumer-facing applications to the backend engines that financial platforms run on —
+                    order books, matching systems, wallet infrastructure, live market data pipelines.
+                </p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;" class="mob-col-2">
+                    <div class="card" style="padding:1.5rem;">
+                        <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+            color:#b4ff00;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.75rem;">
+                            Core Focus
+                        </div>
+                        <p style="font-size:.83rem;color:#777;line-height:1.8;">
+                            Financial Systems · Real-time Infrastructure ·
+                            Crypto / Web3 · Full Stack Architecture
+                        </p>
+                    </div>
+                    <div class="card" style="padding:1.5rem;">
+                        <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+            color:#b4ff00;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.75rem;">
+                            Location
+                        </div>
+                        <p style="font-size:.83rem;color:#777;line-height:1.8;">
+                            Available worldwide · Remote-first
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- divider -->
+    <div style="max-width:1440px;margin:0 auto;padding:0 2rem;">
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.06);">
+    </div>
+
+    <!-- ═══════════════════════ EXPERIENCE ════════ -->
+    <section id="experience" style="max-width:1440px;margin:0 auto;padding:9rem 2rem;">
+
+        <div class="reveal" style="margin-bottom:5rem;">
+            <span class="sec-tag">003 / Experience</span>
+            <h2 style="font-size:clamp(2rem,4.5vw,4rem);font-weight:700;
+      color:#fff;letter-spacing:-.04em;line-height:1.0;">What I've Built</h2>
+        </div>
+
+        <!-- role header -->
+        <div style="display:grid;grid-template-columns:220px 1fr;gap:5rem;
+    align-items:start;" class="mob-col">
+
+            <div class="reveal">
+                <div style="font-family:'Space Mono',monospace;font-size:.62rem;
+        color:#444;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;">
+                    2019 — Present
+                </div>
+                <div style="font-weight:600;color:#fff;font-size:.95rem;margin-bottom:.35rem;">Independent</div>
+                <div style="font-family:'Space Mono',monospace;font-size:.62rem;color:#b4ff00;">
+                    Full Stack Dev &amp; Architect
+                </div>
+                <div style="width:1px;height:3rem;background:linear-gradient(180deg,rgba(180,255,0,.4),transparent);
+        margin:1.5rem 0 0 0;" class="hide-mob"></div>
+            </div>
+
+            <!-- experience cards -->
+            <div style="display:grid;gap:1rem;">
+
+                <!-- card template macro: accent color, tag, title, desc, pills -->
+                <div class="card reveal" style="padding:2rem;position:relative;overflow:hidden;">
+                    <div class="accent-bar" style="background:linear-gradient(180deg,#b4ff00,transparent);"></div>
+                    <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+          color:#b4ff00;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;">
+                        Crypto Exchange — End to End
+                    </div>
+                    <p style="font-size:.87rem;color:#8888a8;line-height:1.8;margin-bottom:1.25rem;">
+                        Designed and built a crypto exchange from the ground up — matching engine,
+                        order book, wallet system, KYC flow, admin panel, trading interface. Every layer.
+                    </p>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                        <span class="pill">Go</span><span class="pill">React</span>
+                        <span class="pill">PostgreSQL</span><span class="pill">Redis</span>
+                        <span class="pill">Kafka</span><span class="pill">WebSocket</span>
+                        <span class="pill">KYC</span><span class="pill">Solidity</span>
+                    </div>
+                </div>
+
+                <div class="card reveal" style="padding:2rem;position:relative;overflow:hidden;">
+                    <div class="accent-bar" style="background:linear-gradient(180deg,#00c8ff,transparent);"></div>
+                    <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+          color:#00c8ff;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;">
+                        Trading &amp; Brokerage Platforms
+                    </div>
+                    <p style="font-size:.87rem;color:#8888a8;line-height:1.8;margin-bottom:1.25rem;">
+                        Built trading and brokerage platforms for prop trading and forex clients — position tracking,
+                        risk management dashboards, real-time P&amp;L, trade analytics, multi-account management.
+                        Systems people with money on the line actually use.
+                    </p>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                        <span class="pill">React</span><span class="pill">NestJS</span>
+                        <span class="pill">TradingView Charts</span><span class="pill">WebSocket</span>
+                        <span class="pill">TimescaleDB</span><span class="pill">D3.js</span>
+                    </div>
+                </div>
+
+                <div class="card reveal" style="padding:2rem;position:relative;overflow:hidden;">
+                    <div class="accent-bar" style="background:linear-gradient(180deg,#a855f7,transparent);"></div>
+                    <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+          color:#a855f7;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;">
+                        Real-Time Market Data Infrastructure
+                    </div>
+                    <p style="font-size:.87rem;color:#8888a8;line-height:1.8;margin-bottom:1.25rem;">
+                        Designed multi-feed ingestion pipelines, normalization layers, and WebSocket distribution
+                        to frontend with sub-second latency. Kafka as the durable event backbone underneath.
+                    </p>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                        <span class="pill">Go</span><span class="pill">Kafka</span>
+                        <span class="pill">NATS</span><span class="pill">Redis</span>
+                        <span class="pill">WebSocket</span>
+                    </div>
+                </div>
+
+                <div class="card reveal" style="padding:2rem;position:relative;overflow:hidden;">
+                    <div class="accent-bar" style="background:linear-gradient(180deg,#ff6b35,transparent);"></div>
+                    <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+          color:#ff6b35;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;">
+                        SaaS Products · Mobile · Games
+                    </div>
+                    <p style="font-size:.87rem;color:#8888a8;line-height:1.8;margin-bottom:1.25rem;">
+                        Built SaaS platforms end to end — auth, billing, teams, permissions, analytics, admin tooling.
+                        Cross-platform mobile apps for financial clients. Mobile games from logic to store
+                        submission on both platforms.
+                    </p>
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                        <span class="pill">Next.js</span><span class="pill">React Native</span>
+                        <span class="pill">Flutter</span><span class="pill">Stripe</span>
+                        <span class="pill">Unity</span><span class="pill">AWS</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- divider -->
+    <div style="max-width:1440px;margin:0 auto;padding:0 2rem;">
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.06);">
+    </div>
+
+    <!-- ═══════════════════════ SKILLS ════════════ -->
+    <section id="skills" style="max-width:1440px;margin:0 auto;padding:9rem 2rem;">
+
+        <div class="reveal" style="margin-bottom:5rem;">
+            <span class="sec-tag">004 / Stack</span>
+            <h2 style="font-size:clamp(2rem,4.5vw,4rem);font-weight:700;
+      color:#fff;letter-spacing:-.04em;line-height:1.0;">Tools &amp; Technologies</h2>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.5rem;">
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#b4ff00;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#b4ff00;letter-spacing:.12em;text-transform:uppercase;">Frontend</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">React</span><span class="pill">Next.js</span>
+                    <span class="pill">Vue</span><span class="pill">Nuxt</span>
+                    <span class="pill">Angular</span><span class="pill">Svelte</span>
+                    <span class="pill">TypeScript</span><span class="pill">Tailwind</span>
+                    <span class="pill">Radix</span><span class="pill">Shadcn</span>
+                    <span class="pill">D3.js</span><span class="pill">TradingView</span>
+                    <span class="pill">Recharts</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#00c8ff;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#00c8ff;letter-spacing:.12em;text-transform:uppercase;">State
+                        &amp; Real-Time</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">Redux</span><span class="pill">Zustand</span>
+                    <span class="pill">Pinia</span><span class="pill">Jotai</span>
+                    <span class="pill">React Query</span><span class="pill">SWR</span>
+                    <span class="pill">WebSocket</span><span class="pill">WebRTC</span>
+                    <span class="pill">SSE</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#a855f7;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#a855f7;letter-spacing:.12em;text-transform:uppercase;">Backend</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">Node.js</span><span class="pill">NestJS</span>
+                    <span class="pill">Express</span><span class="pill">Fastify</span>
+                    <span class="pill">Go</span><span class="pill">Python</span>
+                    <span class="pill">FastAPI</span><span class="pill">Django</span>
+                    <span class="pill">Java</span><span class="pill">Spring Boot</span>
+                    <span class="pill">PHP</span><span class="pill">Laravel</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#ff6b35;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#ff6b35;letter-spacing:.12em;text-transform:uppercase;">APIs
+                        &amp; Protocols</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">REST</span><span class="pill">GraphQL</span>
+                    <span class="pill">gRPC</span><span class="pill">tRPC</span>
+                    <span class="pill">Proto Buffers</span><span class="pill">OpenAPI</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#fbbf24;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#fbbf24;letter-spacing:.12em;text-transform:uppercase;">Databases</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">PostgreSQL</span><span class="pill">MySQL</span>
+                    <span class="pill">MongoDB</span><span class="pill">Redis</span>
+                    <span class="pill">TimescaleDB</span><span class="pill">Elasticsearch</span>
+                    <span class="pill">OpenSearch</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#10b981;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#10b981;letter-spacing:.12em;text-transform:uppercase;">Messaging
+                        &amp; Streaming</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">Apache Kafka</span>
+                    <span class="pill">RabbitMQ</span>
+                    <span class="pill">NATS</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#f43f5e;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#f43f5e;letter-spacing:.12em;text-transform:uppercase;">DevOps
+                        &amp; Infrastructure</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">Docker</span><span class="pill">Kubernetes</span>
+                    <span class="pill">Helm</span><span class="pill">AWS</span>
+                    <span class="pill">GCP</span><span class="pill">Hetzner</span>
+                    <span class="pill">Terraform</span><span class="pill">Ansible</span>
+                    <span class="pill">GitHub Actions</span><span class="pill">ArgoCD</span>
+                    <span class="pill">Nginx</span><span class="pill">Traefik</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#8b5cf6;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#8b5cf6;letter-spacing:.12em;text-transform:uppercase;">Observability</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">Grafana</span><span class="pill">Prometheus</span>
+                    <span class="pill">Loki</span><span class="pill">Sentry</span>
+                    <span class="pill">Datadog</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#06b6d4;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#06b6d4;letter-spacing:.12em;text-transform:uppercase;">Mobile</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">React Native</span><span class="pill">Expo</span>
+                    <span class="pill">Flutter</span><span class="pill">Swift</span>
+                    <span class="pill">SwiftUI</span><span class="pill">Kotlin</span>
+                    <span class="pill">Jetpack Compose</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#f59e0b;letter-spacing:.12em;text-transform:uppercase;">Blockchain
+                        / Web3</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">Solidity</span><span class="pill">Hardhat</span>
+                    <span class="pill">Foundry</span><span class="pill">Ethers.js</span>
+                    <span class="pill">Wagmi</span><span class="pill">Viem</span>
+                    <span class="pill">DeFi Protocols</span><span class="pill">L2 Chains</span>
+                    <span class="pill">IPFS</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#ec4899;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#ec4899;letter-spacing:.12em;text-transform:uppercase;">AI
+                        / ML</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">OpenAI</span><span class="pill">Anthropic</span>
+                    <span class="pill">Gemini</span><span class="pill">LangChain</span>
+                    <span class="pill">LlamaIndex</span><span class="pill">RAG</span>
+                    <span class="pill">HuggingFace</span><span class="pill">Fine-tuning</span>
+                </div>
+            </div>
+
+            <div class="card reveal" style="padding:1.75rem;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#34d399;flex-shrink:0;"></span>
+                    <span
+                        style="font-family:'Space Mono',monospace;font-size:.58rem;color:#34d399;letter-spacing:.12em;text-transform:uppercase;">Game
+                        Development</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:5px;">
+                    <span class="pill">Unity</span><span class="pill">C#</span>
+                    <span class="pill">Unreal Engine</span><span class="pill">Godot</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- divider -->
+    <div style="max-width:1440px;margin:0 auto;padding:0 2rem;">
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.06);">
+    </div>
+
+    <!-- ═══════════════════════ CASE STUDIES ══════ -->
+    <section id="work" style="max-width:1440px;margin:0 auto;padding:9rem 2rem;">
+
+        <div class="reveal" style="margin-bottom:5rem;">
+            <span class="sec-tag">005 / Case Studies</span>
+            <h2 style="font-size:clamp(2rem,4.5vw,4rem);font-weight:700;
+      color:#fff;letter-spacing:-.04em;line-height:1.0;">
+                Real Problems.<br>Real Solutions.
+            </h2>
+        </div>
+
+        <div style="display:grid;gap:2px;" id="cases"></div>
+    </section>
+
+    <!-- divider -->
+    <div style="max-width:1440px;margin:0 auto;padding:0 2rem;">
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.06);">
+    </div>
+
+    <!-- ═══════════════════════ PHILOSOPHY ════════ -->
+    <section style="max-width:1440px;margin:0 auto;padding:9rem 2rem;">
+        <div class="reveal">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);
+      border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;" class="mob-col">
+
+                <div style="padding:2.5rem;background:rgba(255,255,255,.015);
+        border-right:1px solid rgba(255,255,255,.07);" class="mob-border-b">
+                    <div style="font-family:'Space Mono',monospace;font-size:2.8rem;
+          font-weight:700;color:#b4ff00;line-height:.9;margin-bottom:1.25rem;">01</div>
+                    <h4 style="font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.75rem;">Architecture first.
+                    </h4>
+                    <p style="font-size:.82rem;color:#555;line-height:1.8;">
+                        The right structure at the start is cheaper than a rewrite in 18 months.
+                        Decisions get documented. Tradeoffs get explained.
+                    </p>
+                </div>
+
+                <div style="padding:2.5rem;background:rgba(255,255,255,.015);
+        border-right:1px solid rgba(255,255,255,.07);" class="mob-border-b">
+                    <div style="font-family:'Space Mono',monospace;font-size:2.8rem;
+          font-weight:700;color:#b4ff00;line-height:.9;margin-bottom:1.25rem;">02</div>
+                    <h4 style="font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.75rem;">Production is real.
+                    </h4>
+                    <p style="font-size:.82rem;color:#555;line-height:1.8;">
+                        Systems that work in demos and break under load are worse than useless.
+                        Observability, alerting, and runbooks come with the work.
+                    </p>
+                </div>
+
+                <div style="padding:2.5rem;background:rgba(255,255,255,.015);">
+                    <div style="font-family:'Space Mono',monospace;font-size:2.8rem;
+          font-weight:700;color:#b4ff00;line-height:.9;margin-bottom:1.25rem;">03</div>
+                    <h4 style="font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.75rem;">Tools follow problems.
+                    </h4>
+                    <p style="font-size:.82rem;color:#555;line-height:1.8;">
+                        Not familiarity. Not hype. The framework gets picked
+                        after the requirements are understood, not before.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- divider -->
+    <div style="max-width:1440px;margin:0 auto;padding:0 2rem;">
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,.06);">
+    </div>
+
+    <!-- ═══════════════════════ CONTACT ═══════════ -->
+    <section id="contact" style="max-width:1440px;margin:0 auto;padding:9rem 2rem 11rem;">
+        <div style="text-align:center;" class="reveal">
+            <span class="sec-tag" style="display:block;text-align:center;">006 / Contact</span>
+            <h2 style="font-size:clamp(3.5rem,9vw,10rem);font-weight:700;
+      color:#fff;letter-spacing:-.05em;line-height:.88;margin-bottom:2.5rem;">
+                Let's Build<br><span style="color:#b4ff00;">Something.</span>
+            </h2>
+            <p style="font-size:1rem;color:#555;max-width:440px;
+      margin:2rem auto;line-height:1.85;">
+                Open to the right opportunity — complex systems, financial infrastructure,
+                anything that requires actually thinking about architecture.
+            </p>
+            <div style="display:flex;justify-content:center;gap:1rem;
+      flex-wrap:wrap;margin-top:3.5rem;">
+                <a href="mailto:subdanial@gmail.com" style="display:inline-flex;align-items:center;gap:8px;
+          padding:15px 30px;background:#b4ff00;color:#0a0a0f;
+          border-radius:6px;font-family:'Space Mono',monospace;
+          font-size:.72rem;font-weight:700;letter-spacing:.06em;
+          text-transform:uppercase;text-decoration:none;
+          transition:opacity .2s,transform .2s;"
+                    onmouseover="this.style.opacity='.85';this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.opacity='1';this.style.transform='translateY(0)'">
+                    ↗ Send Email
+                </a>
+                <a href="https://t.me/DanteVelli2" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;
+          padding:15px 30px;background:transparent;color:#b4ff00;
+          border:1px solid rgba(180,255,0,.38);
+          border-radius:6px;font-family:'Space Mono',monospace;
+          font-size:.72rem;font-weight:700;letter-spacing:.06em;
+          text-transform:uppercase;text-decoration:none;
+          transition:background .2s,transform .2s;"
+                    onmouseover="this.style.background='rgba(180,255,0,.1)';this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.background='transparent';this.style.transform='translateY(0)'">
+                    ↗ Telegram
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ FOOTER ════════════ -->
+    <footer style="border-top:1px solid rgba(255,255,255,.06);padding:1.75rem 2rem;">
+        <div style="max-width:1440px;margin:0 auto;display:flex;
+    justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+            <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:#2a2a3a;">
+                © 2026 Danial Zadrafiei
+            </span>
+            <span style="font-family:'Space Mono',monospace;font-size:.62rem;color:#2a2a3a;">
+                REMOTE · WORLDWIDE
+            </span>
+        </div>
+    </footer>
+
+    <!-- ═════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════ -->
+    <script>
+        /* ── CURSOR ──────────────────────────────────── */
+        const dot = document.getElementById('cdot');
+        const ring = document.getElementById('cring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            dot.style.left = mx + 'px';
+            dot.style.top = my + 'px';
+        });
+
+        (function animRing() {
+            rx += (mx - rx) * 0.11;
+            ry += (my - ry) * 0.11;
+            ring.style.left = rx + 'px';
+            ring.style.top = ry + 'px';
+            requestAnimationFrame(animRing);
+        })();
+
+        document.querySelectorAll('a,button,.card,.pill').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('hov'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
+        });
+
+        /* ── PROGRESS BAR ────────────────────────────── */
+        window.addEventListener('scroll', () => {
+            const p = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            document.getElementById('pbar').style.width = p + '%';
+        });
+
+        /* ── CLOCK ───────────────────────────────────── */
+        function tick() {
+            const t = new Date().toLocaleTimeString('en-US', {
+                timeZone: 'Asia/Tehran', hour: '2-digit',
+                minute: '2-digit', second: '2-digit', hour12: false
+            });
+            const el = document.getElementById('clock');
+            if (el) el.textContent = 'THR ' + t;
+        }
+        tick(); setInterval(tick, 1000);
+
+        /* ── SCROLL REVEAL ───────────────────────────── */
+        const ro = new IntersectionObserver(entries => {
+            entries.forEach((e, i) => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('in'), i * 55);
+                }
+            });
+        }, { threshold: 0.07 });
+        document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+        /* ── COUNT UP ────────────────────────────────── */
+        function countUp(el, target, dur = 1500) {
+            let start;
+            const step = ts => {
+                if (!start) start = ts;
+                const p = Math.min((ts - start) / dur, 1);
+                el.textContent = Math.floor(p * target);
+                if (p < 1) requestAnimationFrame(step);
+                else el.textContent = target;
+            };
+            requestAnimationFrame(step);
+        }
+        const co = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting && !e.target._done) {
+                    e.target._done = true;
+                    countUp(e.target, +e.target.dataset.to);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.cnt').forEach(el => co.observe(el));
+
+        /* ── TICKER ──────────────────────────────────── */
+        const TECH = [
+            'React', 'Next.js', 'TypeScript', 'Node.js', 'NestJS', 'Go', 'Python', 'FastAPI',
+            'PostgreSQL', 'Redis', 'Kafka', 'Docker', 'Kubernetes', 'AWS', 'React Native',
+            'Flutter', 'Solidity', 'GraphQL', 'gRPC', 'WebSocket', 'TimescaleDB',
+            'Elasticsearch', 'Vue.js', 'Angular', 'Svelte', 'Unity', 'TradingView Charts',
+            'D3.js', 'Terraform', 'Prometheus', 'Grafana', 'LangChain', 'Ethers.js', 'NATS'
+        ];
+
+        function buildTicker() {
+            const track = document.getElementById('mqTrack');
+            [1, 2].forEach(() => {
+                const wrap = document.createElement('div');
+                wrap.style.cssText = 'display:flex;gap:0;white-space:nowrap;';
+                TECH.forEach(t => {
+                    const s = document.createElement('span');
+                    s.className = 'pill';
+                    s.style.marginRight = '10px';
+                    s.textContent = t;
+                    wrap.appendChild(s);
+                });
+                track.appendChild(wrap);
+            });
+        }
+        buildTicker();
+
+        /* ── CASE STUDIES ────────────────────────────── */
+        const CASES = [
+            {
+                domain: 'Frontend',
+                color: '#b4ff00',
+                problem: 'Race conditions causing incorrect position displays under load',
+                result: 'Incorrect displays eliminated — codebase became readable overnight',
+                pills: ['React', 'TypeScript', 'Zustand', 'WebSocket'],
+                pbody: 'A brokerage client had a frontend built in vanilla JS. State was scattered across the codebase, race conditions were causing incorrect position displays under load. A new developer couldn\'t make sense of it.',
+                sbody: 'Migrated to React with strict TypeScript, introduced Zustand for global state management, isolated WebSocket feeds into dedicated hooks. The incorrect display issues disappeared. The codebase became something a new developer could actually read.'
+            },
+            {
+                domain: 'Real-Time',
+                color: '#00c8ff',
+                problem: 'REST polling every 500ms drowning the server, users seeing stale prices',
+                result: 'Latency: 500ms avg → under 50ms. Server load: dramatically reduced.',
+                pills: ['WebSocket', 'Kafka', 'Redis Pub/Sub', 'Node.js'],
+                pbody: 'A trading platform was polling the REST API every 500ms for price updates. Under load the server was drowning in requests and users were consistently seeing stale, incorrect prices.',
+                sbody: 'Replaced with a single persistent WebSocket connection per client, server-side fan-out, and a message queue between the feed ingestion layer and the WebSocket server. Price latency went from 500ms average to under 50ms.'
+            },
+            {
+                domain: 'Database',
+                color: '#fbbf24',
+                problem: 'Trade history queries running 8–12 seconds on tens of millions of rows',
+                result: 'Worst-case query time: 12s → under 200ms. No schema changes.',
+                pills: ['PostgreSQL', 'TimescaleDB', 'Redis', 'Indexing'],
+                pbody: 'A platform storing trade history had queries running 8–12 seconds on tables with tens of millions of rows. As data grew, the problem compounded. Users were waiting. Infrastructure costs were climbing.',
+                sbody: 'Added composite indexes on the columns used in the most common filters, rewrote several N+1 query patterns, and introduced query result caching at the service layer for read-heavy endpoints. Worst-case query time dropped to under 200ms.'
+            },
+            {
+                domain: 'Architecture',
+                color: '#a855f7',
+                problem: '12 microservices over REST — no compile-time safety, breaking changes reaching production',
+                result: 'Breaking changes now caught at build time. Never reach production.',
+                pills: ['gRPC', 'Protocol Buffers', 'Go', 'Microservices'],
+                pbody: 'A platform had 12 internal microservices communicating over REST. Adding a new field to a service response required manual updates across 4 other services with no compile-time verification. Breaking changes were a regular production incident.',
+                sbody: 'Migrated internal service-to-service communication to gRPC with shared proto definitions. Breaking changes became impossible to miss — the build failed before they reached production. Service contracts are now enforced at compile time.'
+            },
+            {
+                domain: 'DevOps',
+                color: '#f43f5e',
+                problem: '40-minute manual deployments via SSH with no rollback mechanism',
+                result: '40-min manual operation → 3-min automated rollout with auto-rollback.',
+                pills: ['Kubernetes', 'Docker', 'Helm', 'GitHub Actions'],
+                pbody: 'A platform deployed directly onto VMs with manual configuration. Deployments required SSH access to each server, manual service restarts, no repeatable process, and absolutely no rollback path when something went wrong.',
+                sbody: 'Containerized every service, moved to Kubernetes, implemented rolling deployments. Deployments went from 40-minute manual operations to automated 3-minute rollouts with automatic rollback on health check failure.'
+            },
+            {
+                domain: 'Observability',
+                color: '#10b981',
+                problem: 'No monitoring — first sign of production incident was a user complaint',
+                result: 'Next incident was caught and resolved before any user noticed.',
+                pills: ['Prometheus', 'Grafana', 'Loki', 'Alerting'],
+                pbody: 'A production financial platform had zero monitoring infrastructure. The only way anyone found out something was wrong was when a user complained. By that point, the damage was already done.',
+                sbody: 'Set up Prometheus metrics across all services, Grafana dashboards for both infrastructure and business health, Loki for log aggregation, and alert rules configured for latency spikes, error rate increases, queue depth growth, and disk usage.'
+            },
+        ];
+
+        function buildCases() {
+            const container = document.getElementById('cases');
+            CASES.forEach((c, i) => {
+                const el = document.createElement('div');
+                el.className = 'reveal';
+                el.style.cssText = `
+      border:1px solid rgba(255,255,255,.07);border-radius:10px;
+      overflow:hidden;margin-bottom:2px;
+    `;
+                el.innerHTML = `
+      <div class="case-hdr" style="
+        display:grid;grid-template-columns:1fr 1fr;
+        cursor:pointer;transition:background .2s;"
+        onmouseover="this.style.background='rgba(255,255,255,.015)'"
+        onmouseout="this.style.background='transparent'"
+        onclick="toggleCase(this)">
+        <div style="padding:2rem 2.5rem;border-right:1px solid rgba(255,255,255,.07);"
+          class="mob-border-b">
+          <div style="font-family:'Space Mono',monospace;font-size:.55rem;
+            color:${c.color};letter-spacing:.1em;text-transform:uppercase;margin-bottom:.85rem;">
+            ${c.domain}
+          </div>
+          <h3 style="font-size:.98rem;font-weight:600;color:#fff;line-height:1.45;margin:0;">
+            ${c.problem}
+          </h3>
+        </div>
+        <div style="padding:2rem 2.5rem;display:flex;
+          justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:.55rem;
+              color:#444;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.85rem;">
+              Result
+            </div>
+            <p style="font-size:.85rem;color:#777;line-height:1.6;margin:0;
+              max-width:320px;">${c.result}</p>
+          </div>
+          <span class="case-arrow" style="
+            color:#b4ff00;font-size:1.3rem;flex-shrink:0;
+            margin-left:1rem;transition:transform .35s cubic-bezier(.16,1,.3,1);
+            line-height:1;margin-top:.2rem;transform:rotate(45deg);">−</span>
+        </div>
+      </div>
+      <div class="case-body" style="display:block;
+        padding:0 2.5rem 2.5rem;
+        border-top:1px solid rgba(255,255,255,.05);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;
+          gap:2rem;padding-top:2rem;" class="mob-col-2">
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+              color:#f43f5e;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;">
+              The Problem
+            </div>
+            <p style="font-size:.85rem;color:#7777a0;line-height:1.8;margin:0;">
+              ${c.pbody}
+            </p>
+          </div>
+          <div>
+            <div style="font-family:'Space Mono',monospace;font-size:.58rem;
+              color:#b4ff00;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;">
+              The Solution
+            </div>
+            <p style="font-size:.85rem;color:#7777a0;line-height:1.8;margin:0;">
+              ${c.sbody}
+            </p>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:1.5rem;">
+          ${c.pills.map(p => `<span class="pill">${p}</span>`).join('')}
+        </div>
+      </div>
+    `;
+                container.appendChild(el);
+                ro.observe(el);
+                // re-observe pills inside
+                el.querySelectorAll('.pill,.card').forEach(x => {
+                    x.addEventListener('mouseenter', () => document.body.classList.add('hov'));
+                    x.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
+                });
+            });
+        }
+        buildCases();
+
+        function toggleCase(hdr) {
+            const body = hdr.nextElementSibling;
+            const arrow = hdr.querySelector('.case-arrow');
+            const open = body.style.display !== 'none';
+            body.style.display = open ? 'none' : 'block';
+            arrow.textContent = open ? '+' : '−';
+            arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(45deg)';
+        }
+
+        /* ── SMOOTH SCROLL ───────────────────────────── */
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                const t = document.querySelector(a.getAttribute('href'));
+                if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+            });
+        });
+    </script>
+</body>
+
+</html>
